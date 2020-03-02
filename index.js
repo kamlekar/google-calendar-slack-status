@@ -62,7 +62,7 @@ app.post('/', (req, res, next) => {
   let profile = JSON.stringify({
     "status_text": status,
     "status_emoji": statusEmoji,
-    "status_expiration": end.unix()
+    "status_expiration": end.subtract(330, 'minutes').unix()
   });
   console.log(profile);
   slack.users.profile.set({ token, profile });
