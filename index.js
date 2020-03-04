@@ -11,7 +11,12 @@ const port = process.env.PORT || 5000;
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  verify: function(req, res, buff, encoding){
+    console.log(req);
+    console.log(res);
+  }
+}));
 
 const router = express.Router();
 
