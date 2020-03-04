@@ -11,13 +11,7 @@ const port = process.env.PORT || 5000;
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({
-  verify: function(req, res, buff, encoding){
-    console.log("====buffer response====");
-    console.log(buff.toString());
-    console.log("====end of buffer response====");
-  }
-}));
+app.use(bodyParser.json());
 
 const router = express.Router();
 
@@ -44,8 +38,9 @@ app.post('/', (req, res, next) => {
   const dndToken = '[DND]';
   const awayToken = '[AWAY]';
   // parse event start/stop time
-  const start = moment(req.body.start);
-  const end = moment(req.body.end).subtract(330, 'minutes');
+  const dateFormat = 'MMM D, YYYY [at] hh:mmA';
+  const start = moment(req.body.start, dateFormat);
+  const end = moment(req.body.end, dateFormat);
   // check for DND
   if (status.includes(dndToken)) {
     slack.dnd.setSnooze({
@@ -67,7 +62,7 @@ app.post('/', (req, res, next) => {
   let profile = JSON.stringify({
     "status_text": status,
     "status_emoji": statusEmoji,
-    "status_expiration": end.unix()
+    "status_expiration": end.subtract(330, 'minutes').unix()
   });
   console.log(profile);
   slack.users.profile.set({ token, profile });
