@@ -13,7 +13,9 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({
   verify: function(req, res, buff, encoding){
-    console.log(buff);
+    console.log("====buffer response====");
+    console.log(buff.toString());
+    console.log("====end of buffer response====");
   }
 }));
 
