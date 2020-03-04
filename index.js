@@ -13,8 +13,7 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({
   verify: function(req, res, buff, encoding){
-    console.log(req);
-    console.log(res);
+    console.log(buff);
   }
 }));
 
