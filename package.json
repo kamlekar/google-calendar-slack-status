@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/bjork24/google-calendar-slack-status#readme",
   "dependencies": {
+    "@types/node": "^13.9.0",
     "body-parser": "^1.19.0",
     "emoji-regex": "^8.0.0",
     "express": "^4.16.4",

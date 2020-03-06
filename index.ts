@@ -1,46 +1,10 @@
 import * as moment from "moment";
 import { extendMoment } from "moment-range";
+const slack = require("slack");
+const nodeEmoji = require('node-emoji');
+const token = process.env.SLACK_TOKEN;
 
-class SlackStatus {
-  payload:SlackInputs;
-  constructor(payload:SlackInputs){
-    this.payload = payload;
-  }
 
-  add(){
-
-  }
-
-  clear(){
-
-  }
-
-  setPresence(){
-
-  }
-}
-
-class StatusMessage{
-  eventSummary:string;
-  constructor(eventSummary:string){
-    this.eventSummary = eventSummary;
-  }
-
-  buildMessage():MessageStatus{
-    return {
-      message: "",
-      emoji: "",
-      presence: Presence.meeting
-    }
-  }
-}
-
-class DateCalcs{
-  isInRange(startDate:moment.Moment, endDate:moment.Moment, currentDate:moment.Moment):boolean{
-    var range = extendMoment(moment).range(startDate, endDate);
-    return range.contains(currentDate);
-  }
-}
 
 interface MessageStatus{
   message: string;
@@ -71,11 +35,105 @@ enum CallType {
   add = "add"
 }
 
-enum Presence{
+enum Presence {
   away = "away",
   leave = "leave",
   dnd = "dnd",
-  meeting = "meeting"
+  auto = "auto",
+  lunch = "lunch"
+}
+
+
+class SlackStatus {
+  payload:SlackInputs;
+  constructor(payload:SlackInputs){
+    this.payload = payload;
+  }
+
+  add(){
+    let status = `${this.payload.eventSummary} from ${this.payload.startDate.format('h:mm')} to ${this.payload.endDate.format('h:mm a')} ${process.env.TIME_ZONE}`;
+    let profile = JSON.stringify({
+      "status_text": status,
+      "status_emoji": this.payload.emoji,
+      "status_expiration": this.payload.endDate.unix()
+    });
+    console.log(profile);
+    slack.users.profile.set({ token, profile });
+  }
+
+  clear(){
+
+  }
+}
+
+class StatusMessage{
+  eventSummary:string;
+  startDate:moment.Moment;
+  endDate:moment.Moment;
+  presence:Presence;
+  constructor(eventSummary:string, startDate:moment.Moment, endDate:moment.Moment){
+    this.eventSummary = eventSummary;
+    this.startDate = startDate;
+    this.endDate = endDate;
+  }
+
+  stripMessage(message:string, token:string){
+    return message.replace(token, '').trim();
+  }
+
+  buildMessage():MessageStatus{
+    var awayToken = `[${Presence.away}]`;
+    var dndToken = `[${Presence.dnd}]`;
+    var leaveToken = `[${Presence.leave}]`;
+    var lunchToken = `[${Presence.lunch}]`;
+
+    let statusEmoji = nodeEmoji.unemojify('🗓');
+
+    if(this.eventSummary.indexOf(awayToken) > -1){
+      this.eventSummary = this.stripMessage(this.eventSummary, awayToken);
+      statusEmoji = nodeEmoji.unemojify('🚶');
+      slack.users.setPresence({
+        token,
+        presence: Presence.away
+      });
+      this.presence = Presence.away;
+    }
+    else if(this.eventSummary.indexOf(dndToken) > -1){
+      statusEmoji = nodeEmoji.unemojify('🔕');
+      slack.dnd.setSnooze({
+        dndToken,
+        num_minutes: this.endDate.diff(this.startDate, 'minutes')
+      });
+      this.eventSummary = this.stripMessage(this.eventSummary, dndToken);
+      this.presence = Presence.dnd;
+    }
+    else if(this.eventSummary.indexOf(leaveToken) > -1){
+      statusEmoji = nodeEmoji.unemojify('🏖️');
+      this.eventSummary = this.stripMessage(this.eventSummary, leaveToken);
+      this.presence = Presence.leave;
+    }
+    else if(this.eventSummary.indexOf(lunchToken) > -1){
+      statusEmoji = nodeEmoji.unemojify('🍔');
+      this.eventSummary = this.stripMessage(this.eventSummary, lunchToken);
+      this.presence = Presence.lunch;
+    }
+    else{
+      this.eventSummary = "In meeting";
+      this.presence = Presence.auto;
+    }
+    return {
+      message: this.eventSummary,
+      emoji: statusEmoji,
+      presence: this.presence
+    }
+  }
+}
+
+class DateCalcs{
+  isInRange(startDate:moment.Moment, endDate:moment.Moment, currentDate:moment.Moment):boolean{
+    var range = extendMoment(moment).range(startDate, endDate);
+    return range.contains(currentDate);
+  }
 }
 
 class Init{
@@ -116,7 +174,7 @@ class Init{
   }
 
   buildData(){
-    this.statusMessage = new StatusMessage(this.payload.eventSummary);
+    this.statusMessage = new StatusMessage(this.payload.eventSummary, this.startDate, this.endDate);
     this.messageStatus = this.statusMessage.buildMessage();
     this.slackStatus = new SlackStatus({
       presence: this.messageStatus.presence,
@@ -129,7 +187,7 @@ class Init{
 
   buildClearData(){
     this.slackStatus = new SlackStatus({
-      presence: Presence.meeting,
+      presence: Presence.auto,
       emoji: "",
       endDate: this.endDate,
       startDate: this.startDate,

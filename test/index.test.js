@@ -13,6 +13,10 @@ describe('Utility and common functions', function(){
 
   });
 
+  it('should check whether the event is declined', function(){
+
+  });
+
   it("should handle the error gracefully when the response is not a valid json", function(){
 
   });
