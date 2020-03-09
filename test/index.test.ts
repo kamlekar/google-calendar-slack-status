@@ -1,4 +1,14 @@
 var assert = require('assert');
+import Init from '../index';
+
+describe('init', function(){
+  it('should add status on slack', function(){
+    // var init = new Init({ 
+    //   eventSummary: "Hello", 
+    //   startDate: 
+    // });
+  })
+})
 
 describe('Utility and common functions', function(){
   it('should check whether the time range falls under current datetime', function(){

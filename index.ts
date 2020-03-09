@@ -40,7 +40,8 @@ enum Presence {
   leave = "leave",
   dnd = "dnd",
   auto = "auto",
-  lunch = "lunch"
+  lunch = "lunch",
+  personal = "personal"
 }
 
 
@@ -136,7 +137,7 @@ class DateCalcs{
   }
 }
 
-class Init{
+export default class Init{
   payload:ResponseStructure;
   date: DateCalcs;
   currentDate: moment.Moment;
