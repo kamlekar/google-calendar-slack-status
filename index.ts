@@ -1,49 +1,9 @@
 import * as moment from "moment";
 import { extendMoment } from "moment-range";
+import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "./types";
 const slack = require("slack");
 const nodeEmoji = require('node-emoji');
 const token = process.env.SLACK_TOKEN;
-
-
-
-interface MessageStatus{
-  message: string;
-  emoji: string;
-  presence: Presence;
-}
-
-interface SlackInputs{
-  eventSummary: string,
-  startDate: moment.Moment,
-  endDate: moment.Moment,
-  presence: Presence,
-  emoji: string
-}
-
-interface ResponseStructure{
-  eventSummary: string,
-  startDate: string,
-  endDate: string,
-  originalStartDate?: string,
-  originalEndDate?: string,
-  callType: CallType
-}
-
-enum CallType {
-  update = "update",
-  delete = "delete",
-  add = "add"
-}
-
-enum Presence {
-  away = "away",
-  leave = "leave",
-  dnd = "dnd",
-  auto = "auto",
-  lunch = "lunch",
-  personal = "personal"
-}
-
 
 class SlackStatus {
   payload:SlackInputs;
@@ -160,17 +120,17 @@ export default class Init{
   }
 
   init(){
-    if(this.payload.callType === CallType.add){
+    if(this.payload.eventAction === EventAction.add){
       this.startAdd();
     }
-    else if(this.payload.callType === CallType.delete){
+    else if(this.payload.eventAction === EventAction.delete){
       this.startDelete();
     }
-    else if(this.payload.callType === CallType.update){
+    else if(this.payload.eventAction === EventAction.update){
       this.startUpdate();
     }
     else{
-      throw "invalid call type";
+      throw "invalid event action type";
     }
   }
 

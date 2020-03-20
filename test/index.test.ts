@@ -1,12 +1,17 @@
 var assert = require('assert');
 import Init from '../index';
+import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "../types";
 
 describe('init', function(){
   it('should add status on slack', function(){
-    // var init = new Init({ 
-    //   eventSummary: "Hello", 
-    //   startDate: 
-    // });
+    var init = new Init({ 
+      eventSummary: "Hello", 
+      startDate: "2020-03-09 17:31:22",
+      endDate: "2020-03-09 17:31:22", 
+      eventAction: EventAction.add
+    });
+
+    init.init();
   })
 })
 
@@ -48,6 +53,10 @@ describe('Event updated', function(){
   });
 
   it('should update the status when the ongoing event is updated with change in time extension', function(){
+
+  });
+
+  it('should update the slack status when an event is updated by other organiser which falls under current time', function (){
 
   });
 
