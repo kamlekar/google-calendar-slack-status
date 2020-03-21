@@ -4,8 +4,12 @@
   "description": "Automatically sync your Google Calendar events to your Slack status",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon -r dotenv/config index.ts",
-    "test": "npx mocha -r ts-node/register test/**/*.ts"
+    "build-ts": "tsc",
+    "postinstall": "npm run build-ts",
+    "start": "npm run serve",
+    "serve": "node index.js",
+    "dev": "nodemon -r dotenv/config index.ts",
+    "test": "mocha -r ts-node/register test/**/*.ts"
   },
   "repository": {
     "type": "git",
