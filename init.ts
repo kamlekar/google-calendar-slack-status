@@ -12,7 +12,7 @@ class SlackStatus {
   }
 
   add(){
-    let status = `${this.payload.eventSummary} from ${this.payload.startDate.format('h:mm')} to ${this.payload.endDate.format('h:mm a')} ${process.env.TIME_ZONE}`;
+    let status = `${this.payload.eventSummary} from ${this.payload.startDate.local().format('h:mm')} to ${this.payload.endDate.local().format('h:mm a')} ${process.env.TIME_ZONE}`;
     let profile = JSON.stringify({
       "status_text": status,
       "status_emoji": this.payload.emoji,
