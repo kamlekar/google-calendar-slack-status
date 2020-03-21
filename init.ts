@@ -108,6 +108,10 @@ class DateCalcs{
     var range = extendMoment(moment).range(startDate, endDate);
     return range.contains(currentDate);
   }
+
+  convertToMoment(date:string):moment.Moment{
+    return moment(moment.utc(date).local().format("DD-MM-YYYY HH:mm"));
+  }
 }
 
 export default class Init{
@@ -126,8 +130,8 @@ export default class Init{
     this.payload = payload;
     this.date = new DateCalcs();
 
-    this.startDate = moment(this.payload.startDate);
-    this.endDate = moment(this.payload.endDate);
+    this.startDate = this.date.convertToMoment(this.payload.startDate);
+    this.endDate = this.date.convertToMoment(this.payload.endDate);
     this.currentDate = moment();
     this.dateInRange = this.date.isInRange(this.startDate, this.endDate, this.currentDate);
   }

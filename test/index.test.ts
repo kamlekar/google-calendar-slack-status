@@ -6,6 +6,10 @@ import { extendMoment } from "moment-range";
 
 describe('init', function(){
   it('should add status on slack', function(){
+    let expectedInputDateFormats = [ 
+      '21-Mar-2020 09:00:00'  // Google event update
+    ];
+    
     var init = new Init({ 
       eventSummary: "Hello", 
       startDate: moment().subtract(30, "minutes").format(),
