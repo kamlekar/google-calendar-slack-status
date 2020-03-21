@@ -110,7 +110,11 @@ class DateCalcs{
   }
 
   convertToMoment(date:string):moment.Moment{
-    return moment(moment.utc(date).local().format("DD-MM-YYYY HH:mm"));
+    let utcDate = moment.utc(date, "DD-MMM-YYYY HH:mm:ss");
+    let toLocal = utcDate.local();
+    let localDateFormat = toLocal.format("DD-MM-YYYY HH:mm");
+    let finalMoment = moment(localDateFormat, "DD-MM-YYYY HH:mm");
+    return finalMoment; //moment(moment.utc(date).local().format("DD-MM-YYYY HH:mm"));
   }
 }
 
