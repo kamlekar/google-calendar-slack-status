@@ -7,7 +7,13 @@ const port = process.env.PORT || 5000;
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  verify: function(req:any, res:any, buff:any, encoding:any){
+    console.log("====buffer response====");
+    console.log(buff.toString());
+    console.log("====end of buffer response====");
+  }
+}));
 
 app.post('/', (req:any, res:any, next:any) => {
   // check for secret token
