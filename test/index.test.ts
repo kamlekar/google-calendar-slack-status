@@ -1,5 +1,5 @@
 var assert = require('assert');
-import Init from '../index';
+import Init from '../init';
 import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "../types";
 import * as moment from "moment";
 import { extendMoment } from "moment-range";
