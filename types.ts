@@ -24,6 +24,13 @@ export interface ResponseStructure{
   eventAction: EventAction
 }
 
+export interface StatusBuilder{
+  eventSummary?: string,
+  strip?: boolean,
+  emoji: string,
+  presence: Presence
+}
+
 export enum EventAction {
   update = "update",
   delete = "delete",
@@ -38,3 +45,4 @@ export enum Presence {
   lunch = "lunch",
   personal = "personal"
 }
+

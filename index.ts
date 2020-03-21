@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import { extendMoment } from "moment-range";
-import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "./types";
+import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence, StatusBuilder } from "./types";
 const slack = require("slack");
 const nodeEmoji = require('node-emoji');
 const token = process.env.SLACK_TOKEN;
@@ -43,45 +43,57 @@ class StatusMessage{
   }
 
   buildMessage():MessageStatus{
-    var awayToken = `[${Presence.away}]`;
-    var dndToken = `[${Presence.dnd}]`;
-    var leaveToken = `[${Presence.leave}]`;
-    var lunchToken = `[${Presence.lunch}]`;
-
     let statusEmoji = nodeEmoji.unemojify('🗓');
+    let eventSummary = this.eventSummary.toLowerCase();
 
-    if(this.eventSummary.indexOf(awayToken) > -1){
-      this.eventSummary = this.stripMessage(this.eventSummary, awayToken);
-      statusEmoji = nodeEmoji.unemojify('🚶');
-      slack.users.setPresence({
-        token,
-        presence: Presence.away
-      });
-      this.presence = Presence.away;
-    }
-    else if(this.eventSummary.indexOf(dndToken) > -1){
-      statusEmoji = nodeEmoji.unemojify('🔕');
-      slack.dnd.setSnooze({
-        dndToken,
-        num_minutes: this.endDate.diff(this.startDate, 'minutes')
-      });
-      this.eventSummary = this.stripMessage(this.eventSummary, dndToken);
-      this.presence = Presence.dnd;
-    }
-    else if(this.eventSummary.indexOf(leaveToken) > -1){
-      statusEmoji = nodeEmoji.unemojify('🏖️');
-      this.eventSummary = this.stripMessage(this.eventSummary, leaveToken);
-      this.presence = Presence.leave;
-    }
-    else if(this.eventSummary.indexOf(lunchToken) > -1){
-      statusEmoji = nodeEmoji.unemojify('🍔');
-      this.eventSummary = this.stripMessage(this.eventSummary, lunchToken);
-      this.presence = Presence.lunch;
-    }
-    else{
-      this.eventSummary = "In meeting";
-      this.presence = Presence.auto;
-    }
+    var statuses:Array<StatusBuilder> = [{
+      presence: Presence.away,
+      emoji: '🚶'
+    },{
+      presence: Presence.dnd,
+      emoji: '🔕'
+    },{
+      presence: Presence.leave,
+      emoji: '🏖️'
+    }, {
+      presence: Presence.lunch,
+      emoji: '🍔'
+    }, {
+      presence: Presence.auto,
+      emoji: '🗓'
+    }];
+
+    statuses.some(s => {
+      let token = `[${s.presence}]`;
+      if(eventSummary.indexOf(token) > -1){
+        statusEmoji = nodeEmoji.unemojify(s.emoji);
+        if(s.presence === Presence.away){
+          slack.users.setPresence({
+            token,
+            presence: s.presence
+          });
+          s.strip = true;
+        }
+        else if(s.presence === Presence.dnd){
+          slack.dnd.setSnooze({
+            token,
+            num_minutes: this.endDate.diff(this.startDate, 'minutes')
+          });
+          s.strip = true;
+        }
+
+        if(s.strip){
+          this.eventSummary = this.stripMessage(this.eventSummary, token);
+        }
+
+        if(s.eventSummary){
+          this.eventSummary = s.eventSummary;
+        }
+        this.presence = s.presence;
+        return true;
+      }
+    });
+
     return {
       message: this.eventSummary,
       emoji: statusEmoji,
@@ -193,3 +205,13 @@ export default class Init{
     }
   }
 }
+
+
+var init = new Init({ 
+  eventSummary: "[leave] Hello", 
+  startDate: moment().subtract(30, "minutes").format(),
+  endDate: moment().add(30, "minutes").format(), 
+  eventAction: EventAction.add
+});
+
+init.init();

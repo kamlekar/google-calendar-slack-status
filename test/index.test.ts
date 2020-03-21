@@ -1,13 +1,15 @@
 var assert = require('assert');
 import Init from '../index';
 import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "../types";
+import * as moment from "moment";
+import { extendMoment } from "moment-range";
 
 describe('init', function(){
   it('should add status on slack', function(){
     var init = new Init({ 
       eventSummary: "Hello", 
-      startDate: "2020-03-09 17:31:22",
-      endDate: "2020-03-09 17:31:22", 
+      startDate: moment().subtract(30, "minutes").format(),
+      endDate: moment().add(30, "minutes").format(), 
       eventAction: EventAction.add
     });
 
