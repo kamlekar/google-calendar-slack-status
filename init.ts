@@ -69,18 +69,24 @@ class StatusMessage{
       if(eventSummary.indexOf(token) > -1){
         statusEmoji = nodeEmoji.unemojify(s.emoji);
         if(s.presence === Presence.away){
-          slack.users.setPresence({
-            token,
-            presence: s.presence
-          });
+          // slack.users.setPresence({
+          //   token,
+          //   presence: s.presence
+          // });
           s.strip = true;
         }
         else if(s.presence === Presence.dnd){
-          slack.dnd.setSnooze({
-            token,
-            num_minutes: this.endDate.diff(this.startDate, 'minutes')
-          });
+          // slack.dnd.setSnooze({
+          //   token,
+          //   num_minutes: this.endDate.diff(this.startDate, 'minutes')
+          // });
           s.strip = true;
+        }
+        else{
+          // slack.users.setPresence({
+          //   token,
+          //   presence: "auto"
+          // });
         }
 
         if(s.strip){
