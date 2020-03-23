@@ -47,6 +47,10 @@ class StatusMessage{
     let eventSummary = this.eventSummary.toLowerCase();
 
     var statuses:Array<StatusBuilder> = [{
+      presence: Presence.hospital,
+      emoji: '🏥', 
+      strip: true
+    },{
       presence: Presence.away,
       emoji: '🚶'
     },{

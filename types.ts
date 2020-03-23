@@ -43,6 +43,7 @@ export enum Presence {
   dnd = "dnd",
   auto = "auto",
   lunch = "lunch",
-  personal = "personal"
+  personal = "personal",
+  hospital = "hospital"
 }
 
