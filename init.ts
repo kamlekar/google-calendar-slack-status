@@ -39,7 +39,8 @@ class StatusMessage{
   }
 
   stripMessage(message:string, token:string){
-    return message.replace(token, '').trim();
+    var regex = new RegExp(token, "i");
+    return message.replace(regex, '').trim();
   }
 
   buildMessage():MessageStatus{
