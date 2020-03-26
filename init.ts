@@ -116,7 +116,7 @@ class StatusMessage{
 
 class DateCalcs{
   isInRange(startDate:moment.Moment, endDate:moment.Moment, currentDate:moment.Moment):boolean{
-    var range = extendMoment(moment).range(startDate, endDate);
+    var range = extendMoment(moment).range(startDate.subtract(6, "minutes"), endDate);
     return range.contains(currentDate);
   }
 
