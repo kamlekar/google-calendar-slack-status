@@ -8,27 +8,28 @@ export interface MessageStatus{
 }
 
 export interface SlackInputs{
-  eventSummary: string,
-  startDate: moment.Moment,
-  endDate: moment.Moment,
-  presence: Presence,
+  eventSummary: string;
+  startDate: moment.Moment;
+  endDate: moment.Moment;
+  presence: Presence;
   emoji: string
 }
 
 export interface ResponseStructure{
-  eventSummary: string,
-  startDate: string,
-  endDate: string,
-  originalStartDate?: string,
-  originalEndDate?: string,
+  eventSummary: string;
+  startDate: string;
+  endDate: string;
+  originalStartDate?: string;
+  originalEndDate?: string;
   eventAction: EventAction
 }
 
 export interface StatusBuilder{
-  eventSummary?: string,
-  strip?: boolean,
-  emoji: string,
-  presence: Presence
+  eventSummary?: string;
+  strip?: boolean;
+  emoji: string;
+  presence: Presence;
+  away?: boolean;
 }
 
 export enum EventAction {

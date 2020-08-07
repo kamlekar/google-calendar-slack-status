@@ -38,9 +38,8 @@ class StatusMessage{
     this.endDate = endDate;
   }
 
-  stripMessage(message:string, token:string){
-    var regex = new RegExp(token, "i");
-    return message.replace(regex, '').trim();
+  stripMessage(message:string, str:string){
+    return message.replace(str, '').trim();
   }
 
   buildMessage():MessageStatus{
@@ -50,16 +49,19 @@ class StatusMessage{
     var statuses:Array<StatusBuilder> = [{
       presence: Presence.hospital,
       emoji: '🏥', 
-      strip: true
+      strip: true,
+      away: true
     },{
       presence: Presence.away,
-      emoji: '🚶'
+      emoji: '🚶',
+      away: true
     },{
       presence: Presence.dnd,
       emoji: '🔕'
     },{
       presence: Presence.leave,
-      emoji: '🏖️'
+      emoji: '🏖️',
+      away: true
     }, {
       presence: Presence.lunch,
       emoji: '🍔'
@@ -70,32 +72,16 @@ class StatusMessage{
     }];
 
     statuses.some(s => {
-      let token = `[${s.presence}]`;
-      if(eventSummary.indexOf(token) > -1){
+      let fullPresence = `[${s.presence}]`;
+      if(eventSummary.indexOf(fullPresence) > -1){
         statusEmoji = nodeEmoji.unemojify(s.emoji);
-        if(s.presence === Presence.away){
-          // slack.users.setPresence({
-          //   token,
-          //   presence: s.presence
-          // });
-          s.strip = true;
-        }
-        else if(s.presence === Presence.dnd){
-          // slack.dnd.setSnooze({
-          //   token,
-          //   num_minutes: this.endDate.diff(this.startDate, 'minutes')
-          // });
-          s.strip = true;
-        }
-        else{
-          // slack.users.setPresence({
-          //   token,
-          //   presence: "auto"
-          // });
-        }
+        slack.users.setPresence({
+          token,
+          presence: s.away? 'away': 'auto'
+        });
 
         if(s.strip){
-          this.eventSummary = this.stripMessage(this.eventSummary, token);
+          this.eventSummary = this.stripMessage(this.eventSummary, fullPresence);
         }
 
         if(s.eventSummary){
