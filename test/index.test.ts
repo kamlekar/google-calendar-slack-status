@@ -5,19 +5,20 @@ import * as moment from "moment";
 import { extendMoment } from "moment-range";
 
 describe('init', function(){
+  // Same time different times. Actual local time 1:30 AM 8th Aug.
+  let expectedInputDateFormats = [ 
+    '07-Aug-2020 19:30:00',
+    'August 8, 2020 at 01:00AM'
+  ];
+
   it('should add status on slack', function(){
-    let expectedInputDateFormats = [ 
-      '21-Mar-2020 09:00:00'  // Google event update
-    ];
-    
-    var init = new Init({ 
+    var initOne = new Init({ 
       eventSummary: "Hello", 
-      startDate: moment().subtract(30, "minutes").format(),
-      endDate: moment().add(30, "minutes").format(), 
+      startDate: '07-Aug-2020 19:30:00',
+      endDate: '07-Aug-2020 20:30:00', 
       eventAction: EventAction.add
     });
-
-    init.init();
+    console.log(initOne.startDate.date(), initOne.endDate);
   })
 })
 
