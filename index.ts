@@ -1,4 +1,4 @@
-import Init from './init';
+import { Init } from './src/init';
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');

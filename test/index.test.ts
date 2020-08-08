@@ -1,11 +1,11 @@
 var assert = require('assert');
-import Init from '../init';
-import { MessageStatus, SlackInputs, ResponseStructure, EventAction, Presence } from "../types";
+import { Init } from '../src/init';
+import { EventAction } from "../src/types";
 import * as moment from "moment";
 import { extendMoment } from "moment-range";
 
 describe('init', function(){
-  // Same time different times. Actual local time 1:30 AM 8th Aug.
+  // Same time different times. Actual local time 1:00 AM 8th Aug.
   let expectedInputDateFormats = [ 
     '07-Aug-2020 19:30:00',
     'August 8, 2020 at 01:00AM'
@@ -18,7 +18,7 @@ describe('init', function(){
       endDate: '07-Aug-2020 20:30:00', 
       eventAction: EventAction.add
     });
-    console.log(initOne.startDate.date(), initOne.endDate);
+    console.log(initOne.startDate, moment(moment.utc('07-Aug-2020 19:30:00', "DD-MMM-YYYY HH:mm:ss").local().format("DD-MM-YYYY HH:mm"), "DD-MM-YYYY HH:mm"));
   })
 })
 
