@@ -5,6 +5,8 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "types": ["node", "mocha"],
+    "outDir": "dist"
   }
 } 
