@@ -1,5 +1,5 @@
 var assert = require('assert');
-import { Init } from '../src/init';
+import { Init } from '../src/Init';
 import { EventAction } from "../src/types";
 import * as moment from "moment";
 import { extendMoment } from "moment-range";

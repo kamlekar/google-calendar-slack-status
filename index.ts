@@ -1,9 +1,9 @@
-import { Init } from './src/init';
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const app = express();
 const port = process.env.PORT || 5000;
+const { Init } = require('./src/init');
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
